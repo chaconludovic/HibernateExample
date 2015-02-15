@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping>
+    <class name="com.eldoraludo.hibernateexample.domain.Template" table="template">
+        <id name="id" type="int">
+            <generator class="increment"/>
+        </id>
+        <property name="nom">
+            <column name="nom"/>
+        </property>
+        <component name="templateVariables" class="com.eldoraludo.hibernateexample.domain.TemplateVariables">
+            <parent name="template"/>
+            <set name="templateVariables" cascade="save-update, delete">
+                <key column="template_id" not-null="true"/>
+                <one-to-many class="com.eldoraludo.hibernateexample.domain.TemplateVariable"/>
+            </set>
+        </component>
+
+    </class>
+
+    <class name="com.eldoraludo.hibernateexample.domain.TemplateVariable" table="template_variable">
+        <id name="id" type="int">
+            <generator class="increment"/>
+        </id>
+        <many-to-one name="variable" column="variable_id" class="com.eldoraludo.hibernateexample.domain.Variable"/>
+        <component name="fonctions" class="com.eldoraludo.hibernateexample.domain.Fonctions">
+            <!--<many-to-one name="variable" class="com.eldoraludomain.Variable"/>-->
+            <set name="fonctions" cascade="save-update, delete" table="template_variable_fonction" inverse="false"
+                 lazy="true" fetch="select">
+                <key column="template_variable_id" not-null="true"/>
+                <!--TODO Pouvoir assembler variable avec les autres propriétés de la fonction-->
+                <many-to-many entity-name="com.eldoraludo.hibernateexample.domain.Fonction"  column="fonction_id"/>
+            </set>
+        </component>
+    </class>
+
+    <class name="com.eldoraludo.hibernateexample.domain.Variable" table="variable">
+        <id name="id" type="int">
+            <generator class="increment"/>
+        </id>
+        <property name="nom">
+            <column name="nom"/>
+        </property>
+    </class>
+
+    <class name="com.eldoraludo.hibernateexample.domain.Fonction" table="fonction">
+        <id name="id" type="int">
+            <generator class="increment"/>
+        </id>
+        <property name="nom">
+            <column name="nom"/>
+        </property>
+    </class>
+</hibernate-mapping>
